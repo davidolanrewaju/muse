@@ -11,7 +11,7 @@
             music effortlessly.
           </p>
           <div class="mx-auto w-4/12 flex items-center justify-center gap-4 border-2 border-green-500 hover:border-transparent hover:bg-green-800 text-white px-8 py-5 rounded-full text-xl font-bold transition">
-            <a href="#download" class="uppercase"> Let the Journey Begin! </a>
+            <a href="/api/auth" class="uppercase"> Let the Journey Begin! </a>
             <IconsHeadphoneWithMusic class="w-8 h-8" />
           </div>
         </div>
