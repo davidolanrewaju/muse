@@ -1,25 +1,26 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "nuxt.config.ts",
-      "use": "@nuxtjs/vercel-builder",
-      "config": {
-        "serverFiles": ["server/**"]
+    "version": 2,
+    "builds": [
+      {
+        "src": "nuxt.config.ts",
+        "use": "@nuxtjs/vercel-builder",
+        "config": {
+          "serverFiles": ["server/**"],
+          "tsconfigPath": "tsconfig.json"
+        }
       }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/.*",
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
+    ],
+    "routes": [
+      {
+        "src": "/api/.*",
+        "headers": {
+          "Access-Control-Allow-Origin": "*"
+        },
+        "continue": true
       },
-      "continue": true
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ]
-}
+      {
+        "src": "/(.*)",
+        "dest": "/"
+      }
+    ]
+  }
