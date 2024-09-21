@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     client_id: process.env.SPOTIFY_CLIENT_ID,
     client_secret: process.env.SPOTIFY_CLIENT_SECRET,
     public: {
-      apiBase_url: "https://api.spotify.com/v1"
+      apiBase_url: "https://api.spotify.com/v1",
+      redirect_uri: process.env.PRODUCTION_BASE_URL || 'http://localhost:3000',
     },
   },
   modules: ['@nuxtjs/tailwindcss'],

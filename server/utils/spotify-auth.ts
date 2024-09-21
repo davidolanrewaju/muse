@@ -3,7 +3,7 @@ import { H3Event } from 'h3';
 const runtimeConfig = useRuntimeConfig();
 const clientId = runtimeConfig.client_id;
 const clientSecret = runtimeConfig.client_secret;
-const redirectUri = 'http://localhost:3000/api/auth';
+const redirectUri = runtimeConfig.public.apiBase + '/api/auth';
 const authApiBase = 'https://accounts.spotify.com/authorize';
 const tokenApiBase = 'https://accounts.spotify.com/api/token';
 const scope = [
