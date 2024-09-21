@@ -33,10 +33,10 @@
       <nav class="pt-5">
         <ul class="space-y-4">
           <li v-for="item in menuItems" :key="item.name">
-            <a :href="item.href" @click="isMenuOpen = false" class="text-md flex items-center gap-3 px-3 py-4 rounded hover:bg-green-700 transition-colors">
+            <NuxtLink :to="item.href" @click="isMenuOpen = false" class="text-md flex items-center gap-3 px-3 py-4 rounded hover:bg-green-700 transition-colors">
               <component :is="item.icon" />
               {{ item.name }}
-            </a>
+            </NuxtLink>
           </li>
         </ul>
       </nav>
@@ -46,3 +46,9 @@
     <div v-if="isMenuOpen" @click="isMenuOpen = false" class="inset-0 bg-black opacity-50 z-5 md:hidden"></div>
   </div>
 </template>
+
+<style scoped>
+  .router-link-exact-active {
+    background-color: #15803d;
+  }
+</style>

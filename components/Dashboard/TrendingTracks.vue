@@ -21,7 +21,6 @@
   }
 
   const { data: trending } = useFetch<TrendingData>('/api/spotify/trending');
-
   const selectedTracks = ref<Track[]>([]);
   let intervalId: number;
 
