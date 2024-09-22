@@ -22,7 +22,6 @@
     const data = await $fetch<MusicData>(`/api/spotify/users_tracks?offset=${offset}&limit=${itemsPerPage}`);
     if (page === 1) {
       musicData.value = data;
-      console.log(musicData.value);
     } else {
       musicData.value = {
         top_tracks: musicData.value?.top_tracks || [],
