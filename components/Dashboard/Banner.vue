@@ -1,82 +1,23 @@
 <script setup lang="ts">
   import { Headphones, UserRoundPlus } from 'lucide-vue-next';
-  interface Artist {
-    id: string;
-    name: string;
-    followers: { href: string | null; total: number };
-    images: { url: string }[];
-  }
+  import { useBanner } from '@/composables/useBanner';
+  import { useTrendingData } from '@/composables/useTrendingData';
+  import type { TrendingData } from '@/types/trending';
 
-  interface TrendingData {
-    trending_artists: Artist[];
-  }
+  const { trendingData, fetchTrendingData } = useTrendingData();
 
-  const { data: trending } = useFetch<TrendingData>('/api/spotify/trending');
-  const selectedArtists = ref<Artist[]>([]);
-  let intervalId: number;
-
-  const currentSlide = ref(0);
-  const AUTO_SLIDE_INTERVAL = 5000;
-  const autoSlideInterval = ref<number | null>(null);
-
-  const pickRandomArtists = () => {
-    if (trending.value?.trending_artists && trending.value.trending_artists.length >= 4) {
-      const uniqueArtists = Array.from(new Set(trending.value.trending_artists.map((artist: Artist) => JSON.stringify(artist)))).map((artistString) => JSON.parse(artistString as string) as Artist);
-      selectedArtists.value = uniqueArtists.sort(() => 0.5 - Math.random()).slice(0, 4);
-    }
-  };
-
-  const startAutoSlide = () => {
-    stopAutoSlide();
-    autoSlideInterval.value = window.setInterval(nextSlide, AUTO_SLIDE_INTERVAL);
-  };
-
-  const stopAutoSlide = () => {
-    if (autoSlideInterval.value) {
-      clearInterval(autoSlideInterval.value);
-      autoSlideInterval.value = null;
-    }
-  };
-
-  const handleUserInteraction = () => {
-    stopAutoSlide();
+  onMounted(async () => {
+    await fetchTrendingData();
     startAutoSlide();
-  };
+  });
 
-  const nextSlide = () => {
-    currentSlide.value = (currentSlide.value + 1) % selectedArtists.value.length;
-    handleUserInteraction();
-  };
-
-  const prevSlide = () => {
-    currentSlide.value = (currentSlide.value - 1 + selectedArtists.value.length) % selectedArtists.value.length;
-    handleUserInteraction();
-  };
-
-  const goToSlide = (index: number) => {
-    currentSlide.value = index;
-    handleUserInteraction();
-  };
-
-  watch(
-    () => trending.value,
-    (newValue: TrendingData | null) => {
-      if (newValue) {
-        pickRandomArtists();
-      }
-    }
-  );
+  const { selectedArtists, currentSlide, startAutoSlide, stopAutoSlide, nextSlide, prevSlide, goToSlide } = useBanner(trendingData as Ref<TrendingData | null>);
 
   onMounted(() => {
-    if (trending.value) {
-      pickRandomArtists();
-    }
-    intervalId = window.setInterval(pickRandomArtists, 2 * 60 * 60 * 1000);
     startAutoSlide();
   });
 
   onUnmounted(() => {
-    window.clearInterval(intervalId);
     stopAutoSlide();
   });
 </script>
@@ -88,7 +29,7 @@
       <div class="overflow-hidden">
         <div class="flex transition-transform duration-300 ease-in-out" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
           <div v-for="artist in selectedArtists" :key="artist.id" class="w-full flex-shrink-0">
-            <div class="relative bg-black w-full h-[250px] sm:h-[300px] md:h-[400px] rounded-2xl overflow-hidden">
+            <div class="relative bg-black w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[450px] rounded-2xl overflow-hidden">
               <div class="artist-card w-full h-full bg-no-repeat bg-cover bg-center" :style="{ backgroundImage: `url(${artist.images[0]?.url || ''})` }">
                 <div class="absolute inset-0 bg-black bg-opacity-75"></div>
                 <div class="absolute inset-0 flex items-center px-4 md:pl-12">

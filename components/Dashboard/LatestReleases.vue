@@ -1,60 +1,15 @@
 <script setup lang="ts">
+  import { useLatestReleases } from '@/composables/useLatestReleases';
+  import { useTrendingData } from '@/composables/useTrendingData';
   import { DotIcon } from 'lucide-vue-next';
+  import type { TrendingData } from '@/types/trending';
 
-  interface Artist {
-    name: string;
-  }
+  const { trendingData, fetchTrendingData } = useTrendingData();
+  const { selectedAlbums, getArtistNames } = useLatestReleases(trendingData as Ref<TrendingData | null>);
 
-  interface Image {
-    url: string;
-  }
-
-  interface Album {
-    id: string;
-    name: string;
-    artists: Artist[];
-    images: Image[];
-    album_type: string;
-    release_date: string;
-  }
-
-  interface TrendingData {
-    trending_albums?: Album[];
-  }
-
-  const { data: trending } = useFetch<TrendingData>('/api/spotify/trending');
-
-  const selectedAlbums = ref<Album[]>([]);
-  let intervalId: number;
-
-  const pickRandomAlbums = () => {
-    if (trending.value?.trending_albums && trending.value.trending_albums.length >= 8) {
-      const uniqueAlbums = Array.from(new Set(trending.value.trending_albums.map((album: Album) => JSON.stringify(album)))).map((albumString) => JSON.parse(albumString as string) as Album);
-      selectedAlbums.value = uniqueAlbums.sort(() => 0.5 - Math.random()).slice(0, 9);
-    }
-  };
-
-  watch(
-    () => trending.value,
-    (newValue: TrendingData | null) => {
-      if (newValue) {
-        pickRandomAlbums();
-      }
-    }
-  );
-
-  onMounted(() => {
-    if (trending.value) {
-      pickRandomAlbums();
-    }
-    intervalId = window.setInterval(pickRandomAlbums, 2 * 60 * 60 * 1000);
+  onMounted(async () => {
+    await fetchTrendingData();
   });
-
-  onUnmounted(() => {
-    window.clearInterval(intervalId);
-  });
-
-  const getArtistNames = (artists: Artist[]): string => artists.map((artist) => artist.name).join(', ');
 </script>
 
 <template>
