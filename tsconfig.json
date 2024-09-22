@@ -5,6 +5,10 @@
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
-    "resolveJsonModule": true
-  },
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
 }
