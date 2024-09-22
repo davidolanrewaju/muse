@@ -1,84 +1,32 @@
 <script setup lang="ts">
-  import { Headphones, UserRoundPlus } from 'lucide-vue-next';
-  interface Artist {
-    id: string;
-    name: string;
-    followers: { href: string | null; total: number };
-    images: { url: string }[];
-  }
+import { Headphones, UserRoundPlus } from 'lucide-vue-next';
+import { useBanner } from '@/composables/useBanner';
+import { useTrendingData } from '@/composables/useTrendingData';
 
-  interface TrendingData {
-    trending_artists: Artist[];
-  }
+const { trendingData, fetchTrendingData } = useTrendingData();
 
-  const { data: trending } = useFetch<TrendingData>('/api/spotify/trending');
-  const selectedArtists = ref<Artist[]>([]);
-  let intervalId: number;
+onMounted(async () => {
+  await fetchTrendingData();
+  startAutoSlide();
+});
 
-  const currentSlide = ref(0);
-  const AUTO_SLIDE_INTERVAL = 5000;
-  const autoSlideInterval = ref<number | null>(null);
+const {
+  selectedArtists,
+  currentSlide,
+  startAutoSlide,
+  stopAutoSlide,
+  nextSlide,
+  prevSlide,
+  goToSlide,
+} = useBanner(trendingData as Ref<{ trending_artists: any[] } | null>);
 
-  const pickRandomArtists = () => {
-    if (trending.value?.trending_artists && trending.value.trending_artists.length >= 4) {
-      const uniqueArtists = Array.from(new Set(trending.value.trending_artists.map((artist: Artist) => JSON.stringify(artist)))).map((artistString) => JSON.parse(artistString as string) as Artist);
-      selectedArtists.value = uniqueArtists.sort(() => 0.5 - Math.random()).slice(0, 4);
-    }
-  };
+onMounted(() => {
+  startAutoSlide();
+});
 
-  const startAutoSlide = () => {
-    stopAutoSlide();
-    autoSlideInterval.value = window.setInterval(nextSlide, AUTO_SLIDE_INTERVAL);
-  };
-
-  const stopAutoSlide = () => {
-    if (autoSlideInterval.value) {
-      clearInterval(autoSlideInterval.value);
-      autoSlideInterval.value = null;
-    }
-  };
-
-  const handleUserInteraction = () => {
-    stopAutoSlide();
-    startAutoSlide();
-  };
-
-  const nextSlide = () => {
-    currentSlide.value = (currentSlide.value + 1) % selectedArtists.value.length;
-    handleUserInteraction();
-  };
-
-  const prevSlide = () => {
-    currentSlide.value = (currentSlide.value - 1 + selectedArtists.value.length) % selectedArtists.value.length;
-    handleUserInteraction();
-  };
-
-  const goToSlide = (index: number) => {
-    currentSlide.value = index;
-    handleUserInteraction();
-  };
-
-  watch(
-    () => trending.value,
-    (newValue: TrendingData | null) => {
-      if (newValue) {
-        pickRandomArtists();
-      }
-    }
-  );
-
-  onMounted(() => {
-    if (trending.value) {
-      pickRandomArtists();
-    }
-    intervalId = window.setInterval(pickRandomArtists, 2 * 60 * 60 * 1000);
-    startAutoSlide();
-  });
-
-  onUnmounted(() => {
-    window.clearInterval(intervalId);
-    stopAutoSlide();
-  });
+onUnmounted(() => {
+  stopAutoSlide();
+});
 </script>
 
 <template>

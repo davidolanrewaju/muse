@@ -1,50 +1,11 @@
 <script setup lang="ts">
-  import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
+  import { useMusicData } from '@/composables/useMusicLists';
+  import { usePagination } from '@/composables/usePagination';
 
-  interface Track {
-    id: string;
-    name: string;
-    artists: { name: string }[];
-    album: { images: { url: string }[] };
-  }
+  const { musicData, fetchTopTracks, fetchTracks } = useMusicData();
+  const { currentPage, items: displayedTracks, nextPage, previousPage, canGoNext, canGoPrevious } = usePagination(fetchTracks);
 
-  interface MusicData {
-    top_tracks: Track[];
-    tracks: Track[];
-  }
-
-  const musicData = ref<MusicData | null>(null);
-  const currentPage = ref(1);
-  const itemsPerPage = 18;
-
-  const fetchMusicData = async (page = 1) => {
-    const offset = (page - 1) * itemsPerPage;
-    const data = await $fetch<MusicData>(`/api/spotify/users_tracks?offset=${offset}&limit=${itemsPerPage}`);
-    if (page === 1) {
-      musicData.value = data;
-    } else {
-      musicData.value = {
-        top_tracks: musicData.value?.top_tracks || [],
-        tracks: data.tracks,
-      };
-    }
-  };
-
-  const nextPage = async () => {
-    currentPage.value++;
-    await fetchMusicData(currentPage.value);
-  };
-
-  const previousPage = async () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-      await fetchMusicData(currentPage.value);
-    }
-  };
-
-  const displayedTracks = computed(() => musicData.value?.tracks || []);
-
-  fetchMusicData();
+  fetchTopTracks();
 </script>
 
 <template>
@@ -57,28 +18,16 @@
         <ProfileHeader class="w-auto" />
       </div>
       <div class="my-20">
-        <h2 class="pb-4 text-xl sm:text-2xl font-semibold text-white mb-4">Top Favourites</h2>
-        <ClientOnly>
+        <h2 class="pb-4 text-xl sm:text-2xl font-semibold text-white mb-4">Quick Picks</h2>
           <UserTrackLists :tracks="musicData?.top_tracks ?? []" />
-        </ClientOnly>
       </div>
 
       <div class="mb-10">
         <div class="flex justify-between items-center mb-4">
           <h2 class="pb-4 text-xl sm:text-2xl font-semibold text-white mb-4">Favourites</h2>
-          <div class="flex items-center space-x-4">
-            <button @click="previousPage" :disabled="currentPage === 1" class="flex justify-center items-center text-white border border-white w-8 h-8 rounded-full disabled:opacity-50">
-              <ChevronLeft class="w-6 h-6" />
-            </button>
-            <span class="text-white">Page {{ currentPage }}</span>
-            <button @click="nextPage" :disabled="displayedTracks.length < itemsPerPage" class="flex justify-center items-center text-white border border-white w-8 h-8 rounded-full disabled:opacity-50">
-              <ChevronRight class="w-6 h-6" />
-            </button>
-          </div>
         </div>
-        <ClientOnly>
-          <UserTrackLists :tracks="displayedTracks" />
-        </ClientOnly>
+        <UserTrackLists :tracks="displayedTracks" />
+        <Pagination :current-page="currentPage" :can-go-previous="canGoPrevious" :can-go-next="canGoNext" @previous="previousPage" @next="nextPage" />
       </div>
     </main>
   </div>
