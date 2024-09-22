@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { useTrendingTracks } from '@/composables/useTrendingTracks';
   import { useTrendingData } from '@/composables/useTrendingData';
+  import type { TrendingData } from '@/types/trending';
   import { PlayCircle } from 'lucide-vue-next';
 
   const { trendingData, fetchTrendingData } = useTrendingData();
-  const { selectedTracks, getArtistNames } = useTrendingTracks(trendingData);
+  const { selectedTracks, getArtistNames } = useTrendingTracks(trendingData as Ref<TrendingData | null>);
 
   onMounted(async () => {
   await fetchTrendingData();

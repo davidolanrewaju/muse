@@ -1,16 +1,5 @@
-import { ref } from 'vue';
-import { useRandomSelection } from './useRandomSelection';
-
-interface Artist {
-  id: string;
-  name: string;
-  followers: { href: string | null; total: number };
-  images: { url: string }[];
-}
-
-export interface TrendingData {
-  trending_artists: Artist[];
-}
+import { useRandomSelection } from '@/composables/useRandomSelection';
+import type { TrendingData, Artist } from '@/types/trending';
 
 export function useBanner(trendingData: Ref<TrendingData | null>) {
   const { selectedItems: selectedArtists } = useRandomSelection(async () => trendingData.value?.trending_artists || [], 4);

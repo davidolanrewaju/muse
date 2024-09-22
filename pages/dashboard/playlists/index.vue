@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Plus } from 'lucide-vue-next';
-  import { usePlaylist } from '@/composables/usePlayLists';
-  const { playListData, showCreatePlaylistPopup, fetchPlaylists, openCreatePlaylistPopup, closeCreatePlaylistPopup, createPlaylist } = usePlaylist();
+  import { usePlayLists } from '@/composables/usePlayLists';
+  const { playListData, showCreatePlaylistPopup, fetchPlaylists, openCreatePlaylistPopup, closeCreatePlaylistPopup, createPlaylist } = usePlayLists();
 
   // Fetch playlists on component mount
   fetchPlaylists();

@@ -1,32 +1,25 @@
 <script setup lang="ts">
-import { Headphones, UserRoundPlus } from 'lucide-vue-next';
-import { useBanner } from '@/composables/useBanner';
-import { useTrendingData } from '@/composables/useTrendingData';
+  import { Headphones, UserRoundPlus } from 'lucide-vue-next';
+  import { useBanner } from '@/composables/useBanner';
+  import { useTrendingData } from '@/composables/useTrendingData';
+  import type { TrendingData } from '@/types/trending';
 
-const { trendingData, fetchTrendingData } = useTrendingData();
+  const { trendingData, fetchTrendingData } = useTrendingData();
 
-onMounted(async () => {
-  await fetchTrendingData();
-  startAutoSlide();
-});
+  onMounted(async () => {
+    await fetchTrendingData();
+    startAutoSlide();
+  });
 
-const {
-  selectedArtists,
-  currentSlide,
-  startAutoSlide,
-  stopAutoSlide,
-  nextSlide,
-  prevSlide,
-  goToSlide,
-} = useBanner(trendingData as Ref<{ trending_artists: any[] } | null>);
+  const { selectedArtists, currentSlide, startAutoSlide, stopAutoSlide, nextSlide, prevSlide, goToSlide } = useBanner(trendingData as Ref<TrendingData | null>);
 
-onMounted(() => {
-  startAutoSlide();
-});
+  onMounted(() => {
+    startAutoSlide();
+  });
 
-onUnmounted(() => {
-  stopAutoSlide();
-});
+  onUnmounted(() => {
+    stopAutoSlide();
+  });
 </script>
 
 <template>
@@ -36,7 +29,7 @@ onUnmounted(() => {
       <div class="overflow-hidden">
         <div class="flex transition-transform duration-300 ease-in-out" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
           <div v-for="artist in selectedArtists" :key="artist.id" class="w-full flex-shrink-0">
-            <div class="relative bg-black w-full h-[250px] sm:h-[300px] md:h-[400px] rounded-2xl overflow-hidden">
+            <div class="relative bg-black w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[450px] rounded-2xl overflow-hidden">
               <div class="artist-card w-full h-full bg-no-repeat bg-cover bg-center" :style="{ backgroundImage: `url(${artist.images[0]?.url || ''})` }">
                 <div class="absolute inset-0 bg-black bg-opacity-75"></div>
                 <div class="absolute inset-0 flex items-center px-4 md:pl-12">

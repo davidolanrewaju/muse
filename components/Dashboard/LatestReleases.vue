@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useLatestReleases } from '@/composables/useLatestReleases';
-import { useTrendingData } from '@/composables/useTrendingData';
-import { DotIcon } from 'lucide-vue-next';
+  import { useLatestReleases } from '@/composables/useLatestReleases';
+  import { useTrendingData } from '@/composables/useTrendingData';
+  import { DotIcon } from 'lucide-vue-next';
+  import type { TrendingData } from '@/types/trending';
 
-const { trendingData, fetchTrendingData } = useTrendingData();
-const { selectedAlbums, getArtistNames } = useLatestReleases(trendingData as Ref<import('@/composables/useLatestReleases').TrendingData | null>);
+  const { trendingData, fetchTrendingData } = useTrendingData();
+  const { selectedAlbums, getArtistNames } = useLatestReleases(trendingData as Ref<TrendingData | null>);
 
-onMounted(async () => {
-  await fetchTrendingData();
-});
+  onMounted(async () => {
+    await fetchTrendingData();
+  });
 </script>
-
-
 
 <template>
   <div v-if="selectedAlbums.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

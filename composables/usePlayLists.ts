@@ -8,7 +8,7 @@ export interface Playlist {
   owner: { display_name: string; id: string };
 }
 
-export function usePlaylist() {
+export function usePlayLists() {
   const playListData = ref<{ playlists: Playlist[]; featured_playlists: Playlist[] } | null>(null);
   const showCreatePlaylistPopup = ref(false);
 

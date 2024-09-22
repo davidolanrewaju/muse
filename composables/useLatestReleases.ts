@@ -1,25 +1,5 @@
-import { useRandomSelection } from './useRandomSelection';
-
-interface Artist {
-  name: string;
-}
-
-interface Image {
-  url: string;
-}
-
-interface Album {
-  id: string;
-  name: string;
-  artists: Artist[];
-  images: Image[];
-  album_type: string;
-  release_date: string;
-}
-
-export interface TrendingData {
-  trending_albums?: Album[];
-}
+import { useRandomSelection } from '@/composables/useRandomSelection';
+import type { TrendingData, Album, Artist } from '@/types/trending';
 
 export function useLatestReleases(trendingData: Ref<TrendingData | null>) {
   const { selectedItems: selectedAlbums } = useRandomSelection(async () => trendingData.value?.trending_albums || [], 9);

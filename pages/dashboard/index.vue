@@ -7,7 +7,7 @@
         <SearchBar class="w-full sm:w-2/3 md:w-1/2" />
         <ProfileHeader class="w-auto" />
       </div>
-      <DashboardBanner class="mt-6" />
+      <DashboardBanner class="mt-10 sm:mt-12 md:mt-16 lg:mt-20" />
       <div class="my-10 sm:my-16 md:my-20">
         <h2 class="pb-4 text-xl sm:text-2xl font-semibold text-white mb-4">Latest Releases</h2>
         <DashboardLatestReleases />
